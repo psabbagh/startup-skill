@@ -128,4 +128,4 @@ Keep the disagreements. A board that agrees on everything was not doing its job.
 
 `startup/idea.md`, `startup/board/` (the brief and one memo per advisor),
 `startup/board.md`. Then give the vote in one line and suggest the next step:
-`/startup-buyers` to put the idea in front of 100 simulated buyers.
+`/startup-competitors` to see how buyers already solve this and what they pay.

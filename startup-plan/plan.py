@@ -18,6 +18,7 @@ The checks:
     6. enough simulated buyers would pay now, or start the free trial meaning to pay after it when the
        offer has one (default 20 %, change with --min-buy-rate)
     7. the buyers were shown the same price the numbers use
+    8. if there is a marketing plan, the numbers use its forecast of new customers and their cost
 
     python3 plan.py                      reads ./startup, writes ./startup/plan.md
     python3 plan.py --dir path/to/startup --min-buy-rate 0.25
@@ -36,24 +37,34 @@ MIN_BUY_RATE = 0.20
 SECTIONS = [  # (file inside startup/, heading, the skill that writes it)
     ("summary.md", "Summary", "startup-plan"),
     ("board.md", "What the board said", "startup-board"),
+    ("competitors.md", "The competition", "startup-competitors"),
     ("buyers/results.md", "The buyer panel", "startup-buyers"),
+    ("marketing.md", "How customers will find it", "startup-marketing"),
     ("numbers.md", "The numbers", "startup-numbers"),
     ("real-test.md", "Test it on real people", "startup-plan"),
 ]
 
 
-_NUMBERS = []
+_MODULES = {}
+
+
+def _module(folder, name):
+    """A sibling skill's tool, loaded once (the folder names have hyphens, so no plain import)."""
+    if name not in _MODULES:
+        path = os.path.join(HERE, "..", folder, name + ".py")
+        spec = importlib.util.spec_from_file_location("startup_" + name, path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _MODULES[name] = mod
+    return _MODULES[name]
 
 
 def _numbers_module():
-    """startup-numbers' numbers.py, loaded once (the folder names have hyphens, so no plain import)."""
-    if not _NUMBERS:
-        path = os.path.join(HERE, "..", "startup-numbers", "numbers.py")
-        spec = importlib.util.spec_from_file_location("startup_numbers", path)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        _NUMBERS.append(mod)
-    return _NUMBERS[0]
+    return _module("startup-numbers", "numbers")
+
+
+def _funnel_module():
+    return _module("startup-marketing", "funnel")
 
 
 def _read(path):
@@ -141,6 +152,28 @@ def verdict(d, min_buy_rate=MIN_BUY_RATE):
                                   " price. Run /startup-buyers again at %s with the same seed." % (
                                       nm.money(numbers, float(shown), True), nm.money(numbers, numbers["price"], True),
                                       nm.money(numbers, numbers["price"], True))))
+    raw = _read(os.path.join(d, "marketing.json"))
+    if numbers is not None:
+        if raw is None:
+            notes.append("No marketing plan yet, so the new customers in the numbers are a guess. Run"
+                         " /startup-marketing to build them from real channels.")
+        else:
+            fm = _funnel_module()
+            try:
+                forecast = fm.forecast(json.loads(raw))
+            except (ValueError, fm.FunnelError) as e:
+                raise nm.NumbersError("marketing.json: %s" % e)
+            ok, why = fm.matches(forecast, spec)
+            if not forecast["year1_customers"]:
+                checks.append((False, "The marketing plan wins no customers in year 1. Improve the offer"
+                                      " (/startup-buyers) or find channels that reach more people."))
+            elif ok:
+                checks.append((True, "The numbers use the marketing plan: %.0f new customers in year 1, %s each to"
+                                     " win." % (forecast["year1_customers"],
+                                                fm._money(numbers["currency"], forecast["cost_per_customer"]))))
+            else:
+                checks.append((False, "%s%s. Run funnel.py --apply (see /startup-marketing), then build the plan"
+                                      " again." % (why[0].upper(), why[1:])))
     if missing:
         v = "Incomplete"
     elif all(ok for ok, _ in checks):

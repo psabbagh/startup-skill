@@ -1,8 +1,8 @@
 ---
 name: startup-plan
 description: >-
-  Compiles what the startup-skill pack found (the board, the buyer panel and the
-  numbers) into one business plan with a verdict at the top that is computed, never
+  Compiles what the startup-skill pack found (the board, the competitors, the buyer
+  panel, the marketing plan and the numbers) into one business plan with a verdict at the top that is computed, never
   written by hand: Profitable, Not yet (with the numbers that fail) or Incomplete.
   Adds a half-page summary and the cheapest test to run on real people next. Use when
   someone asks "write my business plan", "put it all together", "is it profitable",
@@ -44,6 +44,8 @@ It prints the verdict and every check, all computed:
    `--min-buy-rate` only for a reason, and say the reason.
 7. The buyers were shown the same price the numbers use. If the price changed after the
    panel, the panel has not tested it: run `/startup-buyers` again at the new price.
+8. If there is a marketing plan, the numbers use its forecast of new customers and what
+   each costs to win. Without one, the plan notes that the customer numbers are a guess.
 
 It also warns when the plan is fragile: still profitable as planned, but not with
 20 % fewer sales.
@@ -95,8 +97,8 @@ python3 "${CLAUDE_SKILL_DIR}/plan.py" --dir startup
 ```
 
 It writes `startup/plan.md`: the verdict and its checks, the key numbers, the
-summary, the idea, the board, the buyer panel, the numbers, the real-world test, and
-what is not done yet.
+summary, the idea, the board, the competition, the buyer panel, how customers will find
+it, the numbers, the real-world test, and what is not done yet.
 
 ## Rules
 

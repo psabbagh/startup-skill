@@ -5,7 +5,8 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))  # the folder that holds the startup-* skill folders
-PACK = ["startup-skill", "startup-board", "startup-buyers", "startup-numbers", "startup-plan"]
+PACK = ["startup-skill", "startup-board", "startup-competitors", "startup-buyers", "startup-marketing", "startup-numbers",
+        "startup-plan"]
 
 
 def skill(name, *parts):

@@ -144,11 +144,41 @@ class Examples(unittest.TestCase):
     def test_examples_load_and_run(self):
         buyers = load("startup-buyers", "buyers")
         numbers = load("startup-numbers", "numbers")
+        competitors = load("startup-competitors", "competitors")
+        funnel = load("startup-marketing", "funnel")
         with open(skill("startup-buyers", "customer.example.json"), encoding="utf-8") as fh:
             buyers.check_customer(json.load(fh))
         for name in ("example-subscription.json", "example-one-time.json"):
             with open(skill("startup-numbers", name), encoding="utf-8") as fh:
                 numbers.analyse(json.load(fh))
+        self.assertEqual(competitors.problems(competitors.read(skill("startup-competitors", "competitors.example.csv"))), [])
+        with open(skill("startup-marketing", "marketing.example.json"), encoding="utf-8") as fh:
+            funnel.forecast(json.load(fh))
+
+    def test_example_competitors_are_clearly_made_up(self):
+        competitors = load("startup-competitors", "competitors")
+        for row in competitors.read(skill("startup-competitors", "competitors.example.csv")):
+            self.assertTrue(row["url"].startswith("https://example.com/"), row["name"])
+
+
+class Order(unittest.TestCase):
+    STEPS = ["startup-board", "startup-competitors", "startup-buyers", "startup-marketing", "startup-numbers",
+             "startup-plan"]
+
+    def test_run_all_lists_the_six_steps_in_order(self):
+        text = read(skill("startup-skill", "SKILL.md"))
+        self.assertIn("Six steps", text)
+        for i, step in enumerate(self.STEPS, start=1):
+            self.assertIn("**Step %d, `%s`" % (i, step), text)
+
+    def test_each_step_points_to_the_next(self):
+        for here, nxt in zip(self.STEPS, self.STEPS[1:]):
+            self.assertIn("/%s" % nxt, read(skill(here, "SKILL.md")), "%s should point to %s" % (here, nxt))
+
+    def test_competitors_never_from_memory(self):
+        text = read(skill("startup-competitors", "SKILL.md"))
+        for phrase in ("never fill the table from memory", "codex --search", "Never invent"):
+            self.assertIn(phrase, text)
 
 
 class Release(unittest.TestCase):

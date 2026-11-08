@@ -8,7 +8,7 @@ description: >-
   happens if prices, sales or costs go the wrong way. Handles subscriptions
   (customers who cancel) and one-off sales. Use when someone asks "is this
   profitable", "do the numbers", "find my margins", "break-even", "unit economics",
-  "how much money do I need to start", "how many customers do I need", or as step 3
+  "how much money do I need to start", "how many customers do I need", or as step 5
   of the startup-skill pack.
 argument-hint: "[path to numbers.json]"
 ---
@@ -62,12 +62,22 @@ number (`"churn": "estimate: ..."`). Where the numbers come from, in this order:
 
 Ask the user, in one message, for what only they know: the price, what they will pay
 themselves, rent or salaries they have been quoted, how they will find customers. Use
-the price from `startup/buyers/pitch.md` if it exists. Founders often leave out their
-own pay; ask about it.
+the price from `startup/buyers/pitch.md` if it exists, and compare it with the
+competitors' prices in `startup/competitors.md`. Founders often leave out their own
+pay; ask about it.
 
-**The sales forecast is where plans lie.** Month 1 is almost never the plan. Build
-the 12 months from how many people the user can actually reach each month and what
-share might buy. If the buyer panel ran, its "would pay now" rate is the best case
+**The sales forecast is where plans lie.** Month 1 is almost never the plan. If
+`/startup-marketing` ran, do not type the forecast: write the rest of the file, then
+let the marketing plan fill it in:
+
+```bash
+python3 "${CLAUDE_SKILL_DIR}/../startup-marketing/funnel.py" startup/marketing.json --apply startup/numbers.json
+```
+
+That writes the new customers per month and the cost to win one (for one-off sales,
+the sales per month and the marketing per sale). Without a marketing plan, build the
+12 months from how many people the user can actually reach each month and what share
+might buy, mark them as estimates, and suggest `/startup-marketing`. If the buyer panel ran, its "would pay now" rate is the best case
 (`startup/buyers/results.md`), so a forecast that needs more than that is a red flag.
 Show the user the arithmetic behind month 1 and month 12.
 

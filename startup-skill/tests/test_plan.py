@@ -102,6 +102,52 @@ class Plan(unittest.TestCase):
                       " the bar is 20%).", text)
         self.assertIn("| Buyer panel | 30 of 100 would start the free trial |", text)
 
+    def test_no_marketing_plan_is_a_note(self):
+        self.numbers()
+        self.buyers(30)
+        v, text = plan.build(self.d)
+        self.assertEqual(v, "Profitable")
+        self.assertIn("No marketing plan yet, so the new customers in the numbers are a guess.", text)
+
+    def test_numbers_must_use_the_marketing_plan(self):
+        funnel = load("startup-marketing", "funnel")
+        shutil.copy(skill("startup-marketing", "marketing.example.json"), os.path.join(self.d, "marketing.json"))
+        self.numbers()
+        self.buyers(30)
+        v, text = plan.build(self.d)
+        self.assertEqual(v, "Not yet")
+        self.assertIn("✗ The numbers' sales are not the marketing plan's. Run funnel.py --apply", text)
+        with open(os.path.join(self.d, "marketing.json"), encoding="utf-8") as fh:
+            f = funnel.forecast(json.load(fh))
+        funnel.apply(f, os.path.join(self.d, "numbers.json"))
+        v, text = plan.build(self.d)
+        self.assertIn("✓ The numbers use the marketing plan: 238 new customers in year 1, $50 each to win.", text)
+        self.assertNotIn("No marketing plan yet", text)
+
+    def test_a_plan_with_no_customers_is_reported_not_looped(self):
+        with open(os.path.join(self.d, "marketing.json"), "w", encoding="utf-8") as fh:
+            json.dump({"channels": [{"name": "x", "reach": 0, "steps": [{"name": "pay", "rate": 0}],
+                                     "source": "estimate"}]}, fh)
+        self.numbers()
+        self.buyers(0)
+        v, text = plan.build(self.d)
+        self.assertEqual(v, "Not yet")
+        self.assertIn("✗ The marketing plan wins no customers in year 1.", text)
+        self.assertNotIn("Run funnel.py --apply", text)
+
+    def test_competition_and_marketing_sections(self):
+        self.numbers()
+        self.buyers(30)
+        self.section("board.md", "# Board\n\nvote\n")
+        self.section("competitors.md", "# Competitors\n\nthree rivals\n")
+        self.section("buyers/results.md", "# Buyers\n\n30 buy\n")
+        self.section("marketing.md", "# Marketing\n\nwalk-ins\n")
+        self.section("numbers.md", "# Numbers\n\nmargins\n")
+        v, text = plan.build(self.d)
+        order = [text.index(h) for h in ("## What the board said", "## The competition", "## The buyer panel",
+                                         "## How customers will find it", "## The numbers")]
+        self.assertEqual(order, sorted(order))
+
     def test_the_bar_can_move(self):
         self.numbers()
         self.buyers(12)

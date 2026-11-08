@@ -3,15 +3,22 @@
 Test your startup idea in Claude before you spend a dollar on it. Free, MIT, no
 signup, no API key, nothing to connect.
 
-Five Claude skills that work together:
+Seven Claude skills that work together:
 
 - **A board of eight advisors** that scores your idea using the playbooks of Alex
   Hormozi, Naval Ravikant, Paul Graham, Peter Thiel, Seth Godin, Lenny Rachitsky and
   Tobi Lütke, each advisor voting fund, fund if, or pass.
+- **Your real competitors**, researched on the web with a link for every fact: who
+  already solves the problem, what they charge, what their own customers complain
+  about, and the gap nobody fills.
 - **100 simulated buyers** drawn from your target customer, each with their own
   budget, habits, doubts and current way of doing things. They tell you who would pay
   now, why the rest won't, what would change their mind, and the price range they
-  would accept.
+  would accept. When they say no, it turns their objections into a better offer and
+  tests it on the same buyers.
+- **Where your customers will come from**: two or three channels, every step from
+  reaching someone to getting paid, what it costs and how much of your time it takes,
+  turned into a forecast of new customers per month.
 - **The numbers**: what each sale or customer leaves you, what it costs to win a
   customer, break-even, the cash you need, and when your money comes back. Works for
   subscriptions and one-off sales.
@@ -43,7 +50,7 @@ it. The number tools need Python 3.8 or newer, and nothing else.
 
 ### For Claude: how to install
 
-Copy the five `startup-*` folders into the user's personal skills folder, so the
+Copy the seven `startup-*` folders into the user's personal skills folder, so the
 commands work in every project:
 
 ```bash
@@ -54,7 +61,7 @@ rm -rf /tmp/startup-skill-install
 python3 --version
 ```
 
-On Windows, copy the same five folders into `%USERPROFILE%\.claude\skills\`. Then
+On Windows, copy the same seven folders into `%USERPROFILE%\.claude\skills\`. Then
 tell the user to type `/startup-skill` followed by their idea. If the commands do
 not show up, they should start a new session.
 
@@ -109,7 +116,9 @@ Or run any step on its own (in Codex, type `$` instead of `/`):
 | --- | --- |
 | `/startup-skill` | Runs everything below, in order. |
 | `/startup-board` | The board of advisors scores the idea, names what would kill it and the assumption it rests on, and votes. |
+| `/startup-competitors` | Researches the real alternatives on the web, with a link and a date for every fact: prices, headlines, what their customers complain about, and the gap. Needs web search (in Codex, `codex --search`). |
 | `/startup-buyers` | 100 simulated buyers (20 with `--quick`) see your pitch and say whether they would pay now, and why. Then it can turn their objections into a better offer and re-test it on the same buyers. |
+| `/startup-marketing` | Plans where the first customers come from: the first audience, two or three channels with every step from reached to paid, the first 30 days, and messages that answer the buyers' objections. Turns it into new customers per month and the cost to win each. |
 | `/startup-numbers` | Margins, the cost of winning a customer, break-even, 24 months month by month, cash needed, payback, and what-ifs. |
 | `/startup-plan` | The business plan, the verdict, and the cheapest real-world test to run next. |
 
@@ -150,6 +159,7 @@ The verdict is Profitable only when every check passes:
 6. At least 20% of the simulated buyers would pay now (or, if your offer starts with
    a free trial, would start it today and expect to pay after it).
 7. The buyers were shown the same price the numbers use.
+8. If there is a marketing plan, the numbers use its forecast of new customers.
 
 Otherwise it is Not yet, with the numbers that fail. It is Incomplete until both the
 numbers and the buyer panel exist. The plan also warns when a Profitable result would
@@ -170,6 +180,10 @@ short summary, in our own words, of the ideas in a published book. The advisors 
 speak as the authors, quote them or claim they endorse anything. This project is not
 affiliated with any of them.
 
+**The competitor research uses public pages only.** Every competitor, price and
+complaint links to the page it came from, with the date it was read; the tool refuses
+a row without both. Nothing is scraped in bulk or invented.
+
 **The numbers are only as good as the inputs.** Every estimate is marked and listed
 so you know what to replace with a real quote. Check costs with suppliers, and the
 structure, payroll and tax with an accountant.
@@ -178,10 +192,12 @@ structure, payroll and tax with an accountant.
 
 ## The tools
 
-Three small Python programs, standard library only. None of them touch the network.
+Five small Python programs, standard library only. None of them touch the network.
 
 ```bash
+python3 startup-competitors/competitors.py check startup/competitors.csv
 python3 startup-buyers/buyers.py init --customer startup/buyers/customer.json --pitch startup/buyers/pitch.md
+python3 startup-marketing/funnel.py startup/marketing.json --apply startup/numbers.json
 python3 startup-numbers/numbers.py startup/numbers.json --out startup/numbers.md
 python3 startup-plan/plan.py --dir startup
 ```

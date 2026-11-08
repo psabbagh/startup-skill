@@ -7,7 +7,7 @@ description: >-
   who passes and why, what would change their mind and the price range they would
   accept. Use when someone asks "would people buy this", "test it on customers",
   "simulate buyers", "run the buyer panel", "is there demand", "who is my customer"
-  or "what should I charge", or as step 2 of the startup-skill pack.
+  or "what should I charge", or as step 3 of the startup-skill pack.
 argument-hint: "[--quick | --n 100] [--seed S]"
 ---
 
@@ -52,7 +52,10 @@ file:
 | `known_objections` | the doubts the founder already expects. Never shown to buyers: you compare them with what buyers say, to find the objections nobody saw coming |
 
 Ground it in what the user knows: their customers, interviews, reviews, survey
-answers. Where you are guessing, say so. Show the user the profile in a few lines
+answers. If `/startup-competitors` ran, use `startup/competitors.md`: the real
+alternatives become the `today` list, the recurring complaints go into
+`known_objections`, and the competitors' prices are what buyers will compare the
+offer with. Where you are guessing, say so. Show the user the profile in a few lines
 (who, the segments with their budgets, what they use today) and let them correct it
 before you deal. A wrong customer makes the whole panel wrong.
 
@@ -202,4 +205,5 @@ the numbers.
 ## Output
 
 `startup/buyers/` (customer.json, pitch.md, cards, briefs, answers, results.md,
-results.json). Next: `/startup-numbers`, which uses the buy rate and the price range.
+results.json). Next: `/startup-marketing`, which plans how the buyers most likely to
+buy will find the business, then `/startup-numbers`.
