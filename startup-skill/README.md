@@ -103,7 +103,7 @@ In Codex, skills start with `$` instead of `/`:
 $startup-skill a booking app for hair salons, $29 a month
 ```
 
-It runs the four steps in order, asks you for what only you know, and ends with the
+It runs the six steps in order, asks you for what only you know, and ends with the
 verdict. Add `--quick` for 20 buyers instead of 100 on a first try. The buyer step
 runs one sub-agent per buyer, so it is the longest and uses the most of your plan.
 Each buyer writes one small file, so let it write without asking first: in Claude
