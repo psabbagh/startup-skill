@@ -166,6 +166,14 @@ class Release(unittest.TestCase):
         for name in PACK:
             self.assertIn("`/%s`" % name, readme)
 
+    def test_readme_covers_codex(self):
+        readme = read(skill("startup-skill", "README.md"))
+        for phrase in ("### For Codex: how to install", "cp -R /tmp/startup-skill-install/startup-* ~/.codex/skills/",
+                       "multi_agent = true", "$startup-skill a booking app", "codex --full-auto"):
+            self.assertIn(phrase, readme)
+        hosts = read(skill("startup-buyers", "references", "hosts.md"))
+        self.assertIn("Codex, multi-agent on", hosts)
+
 
 if __name__ == "__main__":
     unittest.main()

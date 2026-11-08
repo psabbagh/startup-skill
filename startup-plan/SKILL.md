@@ -24,7 +24,7 @@ python3 "${CLAUDE_SKILL_DIR}/plan.py" --dir startup
 
 If `${CLAUDE_SKILL_DIR}` is not expanded, use this skill's base directory (Claude
 Code prints it when the skill loads; in Codex it is the folder this SKILL.md was read
-from).
+from, usually `~/.codex/skills/startup-plan/`).
 
 ## Step 1: the verdict
 

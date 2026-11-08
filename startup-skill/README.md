@@ -36,9 +36,10 @@ https://github.com/psabbagh/startup-skill
 install skill
 ```
 
-It runs in Claude Code: the Code tab of the Claude desktop app, or `claude` in a
-terminal. The skills are free; Claude Code itself needs a paid Claude plan. The
-number tools need Python 3.8 or newer, and nothing else.
+It runs in **Claude Code** (the Code tab of the Claude desktop app, or `claude` in a
+terminal) and in **Codex** (the Codex app or the `codex` command). The skills are
+free; Claude Code needs a paid Claude plan and Codex a ChatGPT plan that includes
+it. The number tools need Python 3.8 or newer, and nothing else.
 
 ### For Claude: how to install
 
@@ -55,24 +56,54 @@ python3 --version
 
 On Windows, copy the same five folders into `%USERPROFILE%\.claude\skills\`. Then
 tell the user to type `/startup-skill` followed by their idea. If the commands do
-not show up, they should start a new session. For Codex, copy the folders into
-`~/.codex/skills/` instead.
+not show up, they should start a new session.
+
+### For Codex: how to install
+
+Same folders, into Codex's skills folder:
+
+```bash
+git clone --depth 1 https://github.com/psabbagh/startup-skill.git /tmp/startup-skill-install
+mkdir -p ~/.codex/skills
+cp -R /tmp/startup-skill-install/startup-* ~/.codex/skills/
+rm -rf /tmp/startup-skill-install
+python3 --version
+```
+
+The board and the buyers run as separate agents, which in Codex needs its
+multi-agent feature. If it is not already on, add this to `~/.codex/config.toml`:
+
+```toml
+[features]
+multi_agent = true
+```
+
+Then tell the user to start a new Codex session and type `$startup-skill` followed by
+their idea.
 
 ## Use it
 
-Open Claude Code in any folder (a new, empty one is fine) and type your idea:
+Open Claude Code or Codex in any folder (a new, empty one is fine) and type your
+idea. In Claude Code:
 
 ```
 /startup-skill a booking app for hair salons, $29 a month
 ```
 
+In Codex, skills start with `$` instead of `/`:
+
+```
+$startup-skill a booking app for hair salons, $29 a month
+```
+
 It runs the four steps in order, asks you for what only you know, and ends with the
 verdict. Add `--quick` for 20 buyers instead of 100 on a first try. The buyer step
-runs one sub-agent per buyer, so it is the longest and uses the most of your plan;
-switch to accept-edits mode (Shift+Tab) before it starts, or you will approve 100
-small files.
+runs one sub-agent per buyer, so it is the longest and uses the most of your plan.
+Each buyer writes one small file, so let it write without asking first: in Claude
+Code, switch to accept-edits mode (Shift+Tab) before it starts; in Codex, start with
+`codex --full-auto` or choose the auto approval mode.
 
-Or run any step on its own:
+Or run any step on its own (in Codex, type `$` instead of `/`):
 
 | command | what it does |
 | --- | --- |

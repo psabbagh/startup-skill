@@ -29,7 +29,7 @@ python3 "${CLAUDE_SKILL_DIR}/buyers.py" <command>
 
 Below, `TOOL` means exactly that. If `${CLAUDE_SKILL_DIR}` is not expanded, use this
 skill's base directory (Claude Code prints it when the skill loads; in Codex it is
-the folder this SKILL.md was read from). Everything is written to `startup/buyers/`
+the folder this SKILL.md was read from, usually `~/.codex/skills/startup-buyers/`). Everything is written to `startup/buyers/`
 in the user's project.
 
 ## Step 1: the target customer

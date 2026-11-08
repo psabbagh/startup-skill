@@ -59,7 +59,8 @@ waitlist) apart from what they believe. Do not add your own opinion of the idea.
 
 The advisors are the `## The ...` sections of `advisors.md` in this skill's folder
 (`${CLAUDE_SKILL_DIR}/advisors.md`; if that is not expanded, use this skill's base
-directory, which Claude Code prints when the skill loads). There are eight. Launch one
+directory, which Claude Code prints when the skill loads; in Codex it is usually
+`~/.codex/skills/startup-board/`). There are eight. Launch one
 sub-agent per advisor, all in ONE message so they work independently. In Claude Code
 that is the Agent tool, `subagent_type: general-purpose`, with this prompt:
 
@@ -83,9 +84,11 @@ Score: <1-10> | Vote: FUND / FUND IF / PASS
 ## If FUND IF: the conditions
 ```
 
-In Codex, spawn one agent per advisor if multi-agent is on, or run one `codex exec`
-per advisor with the same prompt. With no way to run separate agents, write the memos
-one after another and tell the user they were not independent.
+In Codex, spawn one agent per advisor with its multi-agent feature, with the same
+prompt, and wait for all of them. If multi-agent is off, ask the user to turn it on
+(`multi_agent = true` under `[features]` in `~/.codex/config.toml`) and start a new
+session. With no way to run separate agents at all, write the memos one after another
+and tell the user they were not independent.
 
 ## Step 3: the chair's summary
 

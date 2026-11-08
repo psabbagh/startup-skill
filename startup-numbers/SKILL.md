@@ -27,7 +27,7 @@ python3 "${CLAUDE_SKILL_DIR}/numbers.py" startup/numbers.json --out startup/numb
 
 If `${CLAUDE_SKILL_DIR}` is not expanded, use this skill's base directory (Claude
 Code prints it when the skill loads; in Codex it is the folder this SKILL.md was read
-from). Two worked examples sit next to this file: `example-subscription.json` (an app
+from, usually `~/.codex/skills/startup-numbers/`). Two worked examples sit next to this file: `example-subscription.json` (an app
 for hair salons, $29 a month) and `example-one-time.json` (a kit sold online).
 
 ## Step 1: gather the inputs

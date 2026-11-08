@@ -32,8 +32,9 @@ In a few plain lines:
    idea and vote.
 2. **The buyers**: 100 simulated buyers (20 with `--quick`), each a separate
    sub-agent, say whether they would pay and why. This is the longest step and uses
-   the most of their Claude plan. In Claude Code, accept-edits mode (Shift+Tab) saves
-   approving 100 small files.
+   the most of their plan. Each buyer writes one small file, so let it write without
+   asking: in Claude Code, accept-edits mode (Shift+Tab); in Codex, the auto approval
+   mode (or `codex --full-auto`).
 3. **The numbers**: you will ask them for real numbers: the price, the costs, what they
    will pay themselves, how they will find customers.
 4. **The plan**: one document with a verdict that is computed, not written: Profitable,
@@ -42,9 +43,12 @@ In a few plain lines:
 ## Run the steps
 
 For each step, run that skill. In Claude Code, invoke it with the Skill tool
-(`startup-board`, then `startup-buyers`, `startup-numbers`, `startup-plan`). On a
-host without that tool, read the step's `SKILL.md` in the sibling folder next to this
-skill's folder (`../startup-board/SKILL.md` and so on) and follow it.
+(`startup-board`, then `startup-buyers`, `startup-numbers`, `startup-plan`). In
+Codex, and on any host without that tool, read the step's `SKILL.md` in the sibling
+folder next to this skill's folder (`../startup-board/SKILL.md` and so on, usually
+under `~/.codex/skills/` in Codex) and follow it. Both hosts run the board and the
+buyers as separate agents: Claude Code with its Agent tool, Codex with its
+multi-agent feature.
 
 - **Step 1, `startup-board`.** It writes `startup/idea.md` first and asks for anything
   missing. After the vote, show the user the result in two lines and carry on, unless
