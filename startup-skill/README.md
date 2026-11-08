@@ -109,7 +109,7 @@ Or run any step on its own (in Codex, type `$` instead of `/`):
 | --- | --- |
 | `/startup-skill` | Runs everything below, in order. |
 | `/startup-board` | The board of advisors scores the idea, names what would kill it and the assumption it rests on, and votes. |
-| `/startup-buyers` | 100 simulated buyers (20 with `--quick`) see your pitch and say whether they would pay now, and why. |
+| `/startup-buyers` | 100 simulated buyers (20 with `--quick`) see your pitch and say whether they would pay now, and why. Then it can turn their objections into a better offer and re-test it on the same buyers. |
 | `/startup-numbers` | Margins, the cost of winning a customer, break-even, 24 months month by month, cash needed, payback, and what-ifs. |
 | `/startup-plan` | The business plan, the verdict, and the cheapest real-world test to run next. |
 

@@ -55,7 +55,11 @@ multi-agent feature.
   the board's strongest version of the business is different enough that the user may
   want to change the idea first. Ask.
 - **Step 2, `startup-buyers`** (pass `--quick` if the user asked for it). The user
-  confirms the target customer before any buyer is dealt. Do not skip that.
+  confirms the target customer before any buyer is dealt. Do not skip that. If few
+  buyers would buy for reasons a better offer could answer (proof, risk, price, effort,
+  missing information), offer one round of the skill's "Improve the pitch and re-test"
+  before moving on. If the reasons are "no need" or "happy with what I use today",
+  say so plainly instead: that is the market, not the pitch.
 - **Step 3, `startup-numbers`.** Ask for everything only the user knows in one message.
 - **Step 4, `startup-plan`.** It computes the verdict and writes the plan.
 

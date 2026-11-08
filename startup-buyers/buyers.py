@@ -204,9 +204,9 @@ def _clear_previous(d, replace):
     old = sorted(f for f in os.listdir(answers) if f.endswith(".json")) if os.path.isdir(answers) else []
     if old and not replace:
         raise BuyersError(
-            "%s already holds %d answers from an earlier panel. To keep them, deal the new panel into its own "
-            "folder (buyers.py --dir startup/buyers-v2 init ...); to delete them and start again, add --replace."
-            % (d, len(old)))
+            "%s already holds %d answers from an earlier panel. To keep them, move the folder aside first "
+            "(for example mv %s %s-v1) and copy its customer.json back; to delete them and start again, add "
+            "--replace." % (d, len(old), d, d.rstrip("/")))
     if replace:
         for sub, ext in (("answers", ".json"), ("briefs", ".md")):
             folder = os.path.join(d, sub)

@@ -68,7 +68,7 @@ class Skills(unittest.TestCase):
             _, text = frontmatter(name)
             for rel in re.findall(r"\$\{CLAUDE_SKILL_DIR\}/([\w.\-/]+\.(?:py|md|json))", text):
                 self.assertTrue(os.path.exists(skill(name, rel)), "%s names %s" % (name, rel))
-            for rel in re.findall(r"`((?:references/|example|customer\.|pitch\.)[\w.\-/]+)`", text):
+            for rel in re.findall(r"`((?:references/|example|customer\.example|pitch\.example)[\w.\-/]*)`", text):
                 self.assertTrue(os.path.exists(skill(name, rel)), "%s names %s" % (name, rel))
 
     def test_codex_interface(self):
@@ -165,6 +165,17 @@ class Release(unittest.TestCase):
         self.assertIn("Profitable, or Not yet", readme)
         for name in PACK:
             self.assertIn("`/%s`" % name, readme)
+
+    def test_the_pitch_can_be_improved_and_retested(self):
+        buyers_skill = read(skill("startup-buyers", "SKILL.md"))
+        self.assertIn("## Improve the pitch and re-test", buyers_skill)
+        for phrase in ("mv startup/buyers startup/buyers-v1", "--seed <the seed from startup/buyers-v1/results.md>",
+                       "Stop after two rounds", "never invent a\ncustomer result"):
+            self.assertIn(phrase, buyers_skill)
+        self.assertIn("Improve the pitch and re-test", read(skill("startup-skill", "SKILL.md")))
+        self.assertIn("re-test it on the same buyers", read(skill("startup-skill", "README.md")))
+        for name in PACK:
+            self.assertNotIn("--dir startup/buyers-v2", read(skill(name, "SKILL.md")), name)
 
     def test_readme_covers_codex(self):
         readme = read(skill("startup-skill", "README.md"))

@@ -65,8 +65,8 @@ they are offered, so leaving out a trial the business would give makes the panel
 harsher than reality; never add one the business would not give. Three to six plain
 lines, no superlatives, nothing the business cannot deliver. Every buyer sees exactly
 this text. Check that `offer_price` in the profile matches the price in the pitch. If
-the price changes later, run the buyers again at the new price (see "Testing a changed
-pitch") so the verdict and the panel describe the same offer.
+the price changes later, run the buyers again at the new price (see "Improve the pitch
+and re-test") so the verdict and the panel describe the same offer.
 
 ## Step 3: deal and run
 
@@ -80,9 +80,10 @@ same buyers again). `briefs` writes one brief per buyer and lists them in waves 
 
 If `startup/buyers/` already holds answers from an earlier panel, `init` refuses, so
 old answers never mix into a new panel. Ask the user which they want: keep the old
-panel and deal the new one into its own folder (`TOOL --dir startup/buyers-v2 init
-...`, then point the other steps at it), or add `--replace` to delete the old answers
-and start again.
+panel by moving it aside (`mv startup/buyers startup/buyers-v1`, then copy its
+`customer.json` back as in "Improve the pitch and re-test"), or add `--replace` to
+delete the old answers and start again. Either way the current panel lives in
+`startup/buyers/`, which is where the plan reads it.
 
 Before a 100-buyer run, tell the user it means 100 sub-agent runs. Each one is a full
 sub-agent, so the run uses a large share of their Claude plan's usage; `--quick` (20
@@ -128,7 +129,9 @@ write or fix an answer for a buyer, and never edit one buyer's brief.
 5. What would change their mind: the answers that repeat.
 6. The price range they would accept, where the price sits in it, and the budget
    check (buyers who said yes but whose budget is below the price).
-7. One sentence on what to change before spending money.
+7. One sentence on what to change before spending money. If few would buy and the
+   reasons are about proof, risk, price, effort or missing information, offer one round
+   of "Improve the pitch and re-test" below.
 
 ## Honest limits, said once
 
@@ -138,17 +141,63 @@ agreeable, so read the buy rate as the best case. Confirm the big calls with rea
 people before signing anything (`/startup-plan` ends with that test). Never present a
 buyer's words as a customer testimonial.
 
-## Testing a changed pitch
+## Improve the pitch and re-test
 
-To see whether a new pitch or price moves the result, keep the old results, write the
-new pitch, and deal the same buyers again into a new folder:
+Buyers judge the offer, not the idea, so a weak offer can make a good idea look like
+a no. When few buyers would buy, offer the user one round of this. Do it when the user
+asks, or when they change the price or the offer.
+
+**1. Read why they passed.** From `results.md`: the top reasons, the objections, and
+the "would change my mind" answers. Sort what buyers asked for into:
+
+| what they asked for | what in the offer answers it |
+| --- | --- |
+| proof it works | a demo, a sample result, a trial on their own data, a named result from a real customer |
+| less risk | a guarantee, a free trial, cancel any time, pay after the first result |
+| a better price | a price inside the range they accept, a founding-member price, a smaller starter plan |
+| less effort | setup done for them, importing their data, nothing new to learn |
+| a missing answer | say it in the pitch: who it is for, how it works, what happens on day one |
+
+"No need" and "happy with what I use today" are not offer problems. If they lead,
+say so plainly: the market or the customer may be wrong, and a better pitch will not
+fix that.
+
+**2. Change the offer, with the user.** For each of the top two or three objections,
+propose one change and ask the user whether the business would really do it. Never
+add a promise, a guarantee or proof the founder cannot deliver, and never invent a
+customer result. If a change costs money (refunds, setup time, a lower price), say
+which number in `/startup-numbers` it moves.
+
+**3. Re-test on the same buyers.** Keep the first panel, then deal the same people
+again with the new pitch:
 
 ```bash
-TOOL --dir startup/buyers-v2 init --customer startup/buyers/customer.json --pitch startup/buyers-v2/pitch.md --n 100 --seed <the seed from results.md>
+mv startup/buyers startup/buyers-v1
+mkdir -p startup/buyers
+cp startup/buyers-v1/customer.json startup/buyers/customer.json
 ```
 
-Then compare the two `results.md`. If nothing moved, say so: the problem may be the
-market, not the wording.
+Write the new `startup/buyers/pitch.md`. In the copied profile, change only
+`offer_price` and `free_trial` if the offer changed them; leave the segments, habits
+and everything else alone, so the same people judge the new offer. Then:
+
+```bash
+TOOL init --customer startup/buyers/customer.json --pitch startup/buyers/pitch.md --n <the same number as before> --seed <the seed from startup/buyers-v1/results.md>
+TOOL briefs
+```
+
+Run the waves and the tally as in "Step 3: deal and run". For a second round, move the
+current panel to `startup/buyers-v2` the same way. The same profile, number and seed deal
+the same buyers. A different number deals different people, so keep it. A full
+100-buyer re-test costs as much as the first run: while iterating on the pitch, use 20
+buyers for both rounds, and run the full 100 once the pitch is settled.
+
+**4. Compare.** Tell the user, before and after: how many would buy, how many said
+probably, the top reasons to pass, which objections dropped and which new ones
+appeared. If nothing moved, say so. Stop after two rounds: more rounds teach the pitch
+to please simulated buyers rather than real ones. If the price changed, run
+`/startup-numbers` again, because the plan checks that the buyers saw the same price as
+the numbers.
 
 ## Output
 

@@ -68,6 +68,16 @@ class Deal(unittest.TestCase):
         self.assertTrue(all(x["pain"] in levels for x in cards))
         self.assertGreater(sum(1 for x in cards if x["pain"] == buyers.DEFAULT_PAIN[0]["level"]), 0)
 
+    def test_a_new_offer_is_judged_by_the_same_buyers(self):
+        # "Improve the pitch and re-test" relies on this: the price, the free trial and the pitch
+        # do not change who is dealt; the number of buyers does.
+        before = buyers.deal(example(), 20, 77)
+        c = example()
+        c["offer_price"] = 19
+        c["free_trial"] = True
+        self.assertEqual(buyers.deal(c, 20, 77), before)
+        self.assertNotEqual(buyers.deal(example(), 21, 77)[:20], before)
+
     def test_more_buyers_than_names(self):
         cards = buyers.deal(example(), 300, 2)
         self.assertEqual(len({x["name"] for x in cards}), 300)
@@ -249,6 +259,29 @@ class Panel(unittest.TestCase):
         self.assertIn("--replace", str(e.exception))
         with open(os.path.join(self.d, "cards.json"), encoding="utf-8") as fh:
             self.assertEqual(len(json.load(fh)), 20, "the refused init must not touch the old panel")
+
+    def test_retest_flow_keeps_the_first_panel_and_the_same_buyers(self):
+        for i in range(1, 21):
+            self.answer("B%03d" % i, "no", "trust")
+        quiet(buyers.main, ["--dir", self.d, "tally"])
+        v1 = self.d + "-v1"
+        os.rename(self.d, v1)
+        os.makedirs(self.d)
+        with open(os.path.join(v1, "panel.json"), encoding="utf-8") as fh:
+            first = json.load(fh)
+        c = dict(first["customer"], offer_price=19, free_trial=True)
+        profile = os.path.join(self.d, "customer.json")
+        with open(profile, "w", encoding="utf-8") as fh:
+            json.dump(c, fh)
+        pitch = os.path.join(self.d, "pitch.md")
+        with open(pitch, "w", encoding="utf-8") as fh:
+            fh.write("Chairside: $19 a month, 14-day free trial, no card.\n")
+        seed, cards = buyers.init(self.d, profile, pitch, 20, first["seed"])
+        with open(os.path.join(v1, "cards.json"), encoding="utf-8") as fh:
+            self.assertEqual(cards, json.load(fh))
+        self.assertTrue(os.path.exists(os.path.join(v1, "results.json")))
+        self.assertEqual(sum(len(w) for w in buyers.write_briefs(self.d)), 20)
+        shutil.rmtree(v1)
 
     def test_init_replace_starts_clean(self):
         for i in range(1, 6):
